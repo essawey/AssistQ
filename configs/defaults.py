@@ -1,6 +1,7 @@
 from yacs.config import CfgNode as CN
 import argparse, sys
 
+# For CMD Interface
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Provide Q2A training and testing pipeline."
@@ -22,6 +23,7 @@ def parse_args():
         parser.print_help()
     return parser.parse_args()
 
+# Helping func for parse_args
 def load_config(args):
     # Setup cfg.
     cfg = CN(new_allowed=True)
@@ -35,6 +37,7 @@ def load_config(args):
     cfg.OUTPUT_DIR = args.cfg_file.replace("configs", "outputs").strip('.yaml')
     return cfg
 
+# Helping func for parse_args
 def build_config():
     cfg = load_config(parse_args())
     return cfg

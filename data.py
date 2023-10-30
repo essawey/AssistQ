@@ -3,6 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from pytorch_lightning import LightningDataModule
 
+# Load the Video and the Scripts
 class EncodedAssistQA(Dataset):
     def __init__(self, cfg, is_train):
         super().__init__()
@@ -10,7 +11,7 @@ class EncodedAssistQA(Dataset):
         root = cfg.DATASET.TRAIN if is_train else cfg.DATASET.VAL
         samples = []
         for t in os.listdir(root):
-            sample = torch.load(os.path.join(root, t, cfg.INPUT.QA), map_location="cpu")
+            sample = torch.load(os.path.join(root, t, cfg.INPUT.QA), map_location="cpu") # NOTE QA: 'qa_maskx-1.pth'
             for s in sample:
                 s["video"] = os.path.join(root, t, cfg.INPUT.VIDEO)
                 s["script"] = os.path.join(root, t, cfg.INPUT.SCRIPT)
@@ -37,6 +38,7 @@ class EncodedAssistQA(Dataset):
     def collate_fn(samples):
         return samples
 
+# This Class calles "EncodedAssistQA" Class for train and val data loader
 class EncodedAssistQADataModule(LightningDataModule):
     def __init__(self, cfg):
         super().__init__()
@@ -54,5 +56,6 @@ class EncodedAssistQADataModule(LightningDataModule):
         return DataLoader(valset, batch_size=cfg.SOLVER.BATCH_SIZE, collate_fn=EncodedAssistQA.collate_fn,
             shuffle=False, drop_last=False, num_workers=cfg.DATALOADER.NUM_WORKERS, pin_memory=True)
     
+# This Class calles "EncodedAssistQADataModule" Class to build all the data (train and val)
 def build_data(cfg):
     return EncodedAssistQADataModule(cfg)
